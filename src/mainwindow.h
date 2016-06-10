@@ -27,6 +27,7 @@ public:
     ~MainWindow();
     void showEvent(QShowEvent *);
     bool eventFilter(QObject *,QEvent *event);
+    void keyPressEvent(QKeyEvent* event);
     void closeEvent(QCloseEvent *);
 signals:
     // Signal for closing the game
@@ -42,6 +43,8 @@ private:
     b2World *world;
     QList<GameItem *> itemList;
     QTimer timer;
+    Bird * current;
+    thing * thingPtr;
 };
 
 #endif // MAINWINDOW_H

@@ -23,15 +23,25 @@ void MainWindow::showEvent(QShowEvent *)
     // Create world
     world = new b2World(b2Vec2(0.0f, -9.8f));
     // Setting Size
-    GameItem::setGlobalSize(QSizeF(32,18),size());
+    GameItem::setGlobalSize(QSizeF(36,18),size());
     // Create ground (You can edit here)
-    itemList.push_back(new Land(16,1.5,32,3,QPixmap(":/ground.png").scaled(width(),height()/6.0),world,scene));
+    itemList.push_back(new Land(16,1.6,32,3,QPixmap(":/ground.png").scaled(width(),height()/6),world,scene));
+    itemList.push_back(new Box(37,0.5,3,100,QPixmap(":/box.png").scaled(width()/5,height()/5),world,scene)); //it's the wall
+    itemList.push_back(new Box(25, 3.5, 2.6, 3.2,QPixmap(":/box.png").scaled(width()/8,height()/9),world,scene));//it's box one
+    itemList.push_back(new Box(29.3, 3.5, 2.8, 3.2,QPixmap(":/box.png").scaled(width()/8,height()/9),world,scene));//it's box two
+
+    thingPtr = new thing(18.0f,5.0f,&timer,QPixmap(":/box.png").scaled(height()/6.0,height()/7.85),world,scene);
 
     // Create bird (You can edit here)
-    Bird *birdie = new Bird(0.0f,10.0f,0.27f,&timer,QPixmap(":/bird.png").scaled(height()/9.0,height()/9.0),world,scene);
+    //current = new redBird(0.0f,18.0f,0.27f,&timer,QPixmap(":/bird.png").scaled(height()/9.0,height()/9.0),world,scene);
+    //current = new blackBird(0.0f,9.0f,0.49f,&timer,QPixmap(":/blackBird.png").scaled(height()/8.0,height()/9.0),world,scene);
+    current = new blueBird(0.0f,9.0f,0.25f,&timer,QPixmap(":/blueBird.png").scaled(height()/8.5,height()/9.0),world,scene);
+    //current = new whiteBird(0.0f,9.0f,0.25f,&timer,QPixmap(":/whiteBird.png").scaled(height()/9.0,height()/9.0),world,scene);
+    piggy  *pig = new  piggy(27.20f,6.0f,0.43f,&timer,QPixmap(":/greenPig.png").scaled(height()/8.0,height()/8.0),world,scene);
     // Setting the Velocity
-    birdie->setLinearVelocity(b2Vec2(5,5));
-    itemList.push_back(birdie);
+    current->setLinearVelocity(b2Vec2(30,0));
+    itemList.push_back(current);
+    itemList.push_back(pig);
     // Timer
     connect(&timer,SIGNAL(timeout()),this,SLOT(tick()));
     connect(this,SIGNAL(quitGame()),this,SLOT(QUITSLOT()));
@@ -44,7 +54,7 @@ bool MainWindow::eventFilter(QObject *, QEvent *event)
     if(event->type() == QEvent::MouseButtonPress)
     {
         /* TODO : add your code here */
-        //std::cout << "Press !" << std::endl ;
+       //std::cout << "Move !" << std::endl;
     }
     if(event->type() == QEvent::MouseMove)
     {
@@ -58,6 +68,10 @@ bool MainWindow::eventFilter(QObject *, QEvent *event)
     }
     return false;
 }
+void MainWindow::keyPressEvent(QKeyEvent* event){
+    if(event->key() == Qt::Key_D||event->key() == Qt::Key_S)
+            current->specialFunc();
+}
 
 void MainWindow::closeEvent(QCloseEvent *)
 {
@@ -67,7 +81,7 @@ void MainWindow::closeEvent(QCloseEvent *)
 
 void MainWindow::tick()
 {
-    world->Step(1.0/60.0,6,2);
+    world->Step(1.0/600.0,6,2);
     scene->update();
 }
 
